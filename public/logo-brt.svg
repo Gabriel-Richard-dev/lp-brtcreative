@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="800" viewBox="0 0 800 800" role="img" aria-labelledby="title desc">
+  <title id="title">BRT Criativo — logo branca em traçado</title>
+  <desc id="desc">Versão vetorial branca com aro e símbolo preenchidos, sobre fundo transparente.</desc>
+  <path fill="#FFFFFF" fill-rule="evenodd" clip-rule="evenodd" d="M400 33.5C197.82493 33.5 33.5 197.82493 33.5 400S197.82493 766.5 400 766.5 766.5 602.17507 766.5 400 602.17507 33.5 400 33.5Zm0 40C580.5575 73.5 726.5 219.4425 726.5 400S580.5575 726.5 400 726.5 73.5 580.5575 73.5 400 219.4425 73.5 400 73.5Zm0 87A21 21 0 0 0 379 181.5v161.71289L237.54688 207.35352a21 21 0 0 0-29.69336.5996 21 21 0 0 0 .5996 29.69336L347.81836 371.5H181a21 21 0 0 0 0 42h179.32617A45 45 0 0 0 373 428.35547V619.5a27 27 0 0 0 54 0V428.35547A45 45 0 0 0 439.67383 413.5H620a21 21 0 0 0 0-42H452.18164l139.36524-133.85352a21 21 0 0 0 .5996-29.69336 21 21 0 0 0-29.69336-.5996L421 343.21289V181.5a21 21 0 0 0-21-21Z"/>
+</svg>

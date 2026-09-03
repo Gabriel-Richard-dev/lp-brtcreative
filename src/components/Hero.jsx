@@ -1,0 +1,196 @@
+import { useEffect, useRef } from 'react'
+import { animate, stagger } from 'animejs'
+import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { portfolio } from '../data/portfolio'
+import Spotlight from './Spotlight'
+import FlipWords from './FlipWords'
+import CircularText from './CircularText'
+import MacbookSection from './MacbookSection'
+import GhostCursor from './GhostCursor'
+
+gsap.registerPlugin(ScrollTrigger)
+
+const VERBS = ['vendem', 'convertem', 'engajam', 'param o feed']
+
+const FLOATS = [
+  { top: '4%', left: '4%', rot: -8, w: 150, fall: 420, index: 0 },
+  { top: '6%', left: '68%', rot: 7, w: 160, fall: 480, index: 1 },
+  { top: '58%', left: '3%', rot: 5, w: 110, fall: 260, index: 2 },
+  { top: '56%', left: '70%', rot: -5, w: 120, fall: 300, index: 3 },
+]
+
+const showcase = portfolio.slice(0, FLOATS.length)
+const FEATURED = showcase[0]
+
+export default function Hero() {
+  const rootRef = useRef(null)
+  const stageRef = useRef(null)
+
+  useEffect(() => {
+    const words = rootRef.current.querySelectorAll('.hero__word')
+    const floats = gsap.utils.toArray('.hero__float')
+    const isMobile = window.matchMedia('(max-width: 760px)').matches
+    const baseScale = isMobile ? 0.55 : 1
+
+    const entrances = [
+      animate(words, {
+        opacity: [0, 1],
+        translateY: [48, 0],
+        rotate: [4, 0],
+        duration: 900,
+        delay: stagger(70),
+        ease: 'outExpo',
+      }),
+      animate('.hero__sub, .hero__cta', {
+        opacity: [0, 1],
+        translateY: [16, 0],
+        duration: 700,
+        delay: stagger(90, { start: 500 }),
+        ease: 'outQuad',
+      }),
+    ]
+
+    const quickX = []
+    const quickRotate = []
+
+    const ctx = gsap.context(() => {
+      floats.forEach((el, i) => {
+        const fall = Number(el.dataset.fall)
+        const inner = el.querySelector('.hero__float-inner')
+
+        // GSAP is the single owner of this element's transform — mixing in
+        // animejs or a CSS media-query scale here gets clobbered on first scroll tick.
+        gsap.set(el, { scale: baseScale })
+        gsap.from(el, {
+          opacity: 0,
+          scale: baseScale * 0.7,
+          duration: 0.8,
+          delay: i * 0.08,
+          ease: 'power3.out',
+        })
+        gsap.to(el, {
+          yPercent: fall,
+          rotate: 0,
+          scale: baseScale,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: stageRef.current,
+            start: 'top top',
+            end: '+=900',
+            scrub: 0.6,
+          },
+        })
+        gsap.to(inner, {
+          y: -10,
+          duration: 2.4 + Math.random(),
+          yoyo: true,
+          repeat: -1,
+          ease: 'sine.inOut',
+        })
+
+        const depth = 14 + i * 4
+        quickX.push(gsap.quickTo(inner, 'x', { duration: 0.7, ease: 'power3' }))
+        quickRotate.push(
+          gsap.quickTo(inner, 'rotation', { duration: 0.7, ease: 'power3' }),
+        )
+        quickX[i].depth = depth
+      })
+    }, rootRef)
+
+    const onPointerMove = (e) => {
+      const rect = stageRef.current.getBoundingClientRect()
+      const px = (e.clientX - rect.left) / rect.width - 0.5
+      quickX.forEach((q) => q(px * q.depth))
+      quickRotate.forEach((q) => q(px * 4))
+    }
+    stageRef.current.addEventListener('pointermove', onPointerMove)
+
+    return () => {
+      entrances.forEach((a) => a.cancel())
+      stageRef.current?.removeEventListener('pointermove', onPointerMove)
+      ctx.revert()
+    }
+  }, [])
+
+  return (
+    <Spotlight className="hero" id="top">
+      <section ref={rootRef}>
+        <div className="hero__stage" id="hero-stage" ref={stageRef}>
+          <div className="hero__floats">
+            {FLOATS.map((f, i) => (
+              <div
+                className={`hero__float torn${i === 0 ? ' design-chrome--active' : ''}`}
+                key={f.index}
+                data-fall={f.fall}
+                style={{
+                  top: f.top,
+                  left: f.left,
+                  width: `${f.w}px`,
+                  '--rot': `${f.rot}deg`,
+                }}
+              >
+                <div className="hero__float-inner">
+                  <img src={showcase[i].src} alt={showcase[i].title} loading="eager" />
+                </div>
+                {i === 0 && (
+                  <>
+                    <span className="design-select" />
+                    <span className="design-tag">{showcase[i].title.toLowerCase()}.psd</span>
+                    <span className="design-handle design-handle--tl" />
+                    <span className="design-handle design-handle--tr" />
+                    <span className="design-handle design-handle--bl" />
+                    <span className="design-handle design-handle--br" />
+                  </>
+                )}
+              </div>
+            ))}
+          </div>
+
+          <div className="container hero__inner">
+            <div className="hero__frame">
+              <span className="hero__frame-handle hero__frame-handle--tl" />
+              <span className="hero__frame-handle hero__frame-handle--tr" />
+              <span className="hero__frame-handle hero__frame-handle--bl" />
+              <span className="hero__frame-handle hero__frame-handle--br" />
+              <span className="hero__frame-resize">↗</span>
+            </div>
+
+            <h1 className="hero__title">
+              {'Artes que'.split(' ').map((w) => (
+                <span className="hero__word" key={w}>
+                  {w}{' '}
+                </span>
+              ))}
+              <span className="hero__word hero__word--accent">
+                <FlipWords words={VERBS} />
+              </span>
+            </h1>
+            <p className="hero__sub">
+              BRTcreative cria identidade visual, social media e peças de campanha para marcas e
+              igrejas que querem parar o feed. Direção de arte pensada pra converter.
+            </p>
+            <div className="hero__cta">
+              <a href="#contato" className="btn btn--primary">
+                Iniciar projeto
+              </a>
+              <a href="#trabalhos" className="btn btn--ghost">
+                Ver portfólio
+              </a>
+            </div>
+
+            <CircularText
+              text="BRTCREATIVE • DIREÇÃO DE ARTE • "
+              className="hero__badge"
+              icon="↓"
+            />
+          </div>
+
+          <GhostCursor label="Benício" className="hero__ghost-cursor" />
+        </div>
+
+        <MacbookSection artwork={FEATURED} />
+      </section>
+    </Spotlight>
+  )
+}
