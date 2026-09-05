@@ -42,18 +42,22 @@ export default function Hero() {
     // sizing itself now scales via CSS (--float-w clamp), so GSAP only owns motion, not scale
     const baseScale = 1
 
-    const entrances = [
-      gsap.fromTo(
-        words,
-        { opacity: 0, y: 48, rotate: 4 },
-        { opacity: 1, y: 0, rotate: 0, duration: 0.9, stagger: 0.07, ease: 'expo.out' },
-      ),
-      gsap.fromTo(
-        '.hero__sub, .hero__cta',
-        { opacity: 0, y: 16 },
-        { opacity: 1, y: 0, duration: 0.7, stagger: 0.09, delay: 0.5, ease: 'power2.out' },
-      ),
-    ]
+    // skip the fade/slide-in tween on weak hardware — just show the final
+    // state immediately instead of animating to it
+    const entrances = lowPower
+      ? [gsap.set(words, { opacity: 1, y: 0, rotate: 0 }), gsap.set('.hero__sub, .hero__cta', { opacity: 1, y: 0 })]
+      : [
+          gsap.fromTo(
+            words,
+            { opacity: 0, y: 48, rotate: 4 },
+            { opacity: 1, y: 0, rotate: 0, duration: 0.9, stagger: 0.07, ease: 'expo.out' },
+          ),
+          gsap.fromTo(
+            '.hero__sub, .hero__cta',
+            { opacity: 0, y: 16 },
+            { opacity: 1, y: 0, duration: 0.7, stagger: 0.09, delay: 0.5, ease: 'power2.out' },
+          ),
+        ]
 
     const quickX = []
     const quickRotate = []
@@ -67,12 +71,17 @@ export default function Hero() {
         // other libs or a CSS media-query scale here gets clobbered on first
         // scroll tick. fromTo (not from) so the "arrived" state is explicit —
         // .hero__float's own CSS opacity:0 made a plain .from() ambiguous
-        // about what it was even animating toward.
-        gsap.fromTo(
-          el,
-          { opacity: 0, scale: baseScale * 0.7 },
-          { opacity: 1, scale: baseScale, duration: 0.8, delay: i * 0.08, ease: 'power3.out' },
-        )
+        // about what it was even animating toward. Skipped on weak hardware —
+        // just appear at rest instead of popping in.
+        if (lowPower) {
+          gsap.set(el, { opacity: 1, scale: baseScale })
+        } else {
+          gsap.fromTo(
+            el,
+            { opacity: 0, scale: baseScale * 0.7 },
+            { opacity: 1, scale: baseScale, duration: 0.8, delay: i * 0.08, ease: 'power3.out' },
+          )
+        }
         // scale isn't driven here — it's already owned by the fromTo above.
         // Scrubbing it a second time via scroll fought that entrance
         // tween for the same property, reading as a sudden size jump the

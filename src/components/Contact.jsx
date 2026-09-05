@@ -1,7 +1,8 @@
 import { useReveal } from '../hooks/useReveal'
+import { isLowPowerDevice } from '../lib/performance'
 
 export default function Contact() {
-  const ref = useReveal()
+  const ref = useReveal({ disabled: isLowPowerDevice() })
 
   return (
     <section id="contato" className="contact" ref={ref}>
