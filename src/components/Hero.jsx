@@ -3,6 +3,7 @@ import { animate, stagger } from 'animejs'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { portfolio } from '../data/portfolio'
+import { isLowPowerDevice } from '../lib/performance'
 import Spotlight from './Spotlight'
 import FlipWords from './FlipWords'
 import CircularText from './CircularText'
@@ -34,11 +35,11 @@ export default function Hero() {
   useEffect(() => {
     const words = rootRef.current.querySelectorAll('.hero__word')
     const isMobile = window.matchMedia('(max-width: 999px)').matches
-    // the extra 4 corner stamps are display:none on mobile (CSS) but GSAP
-    // doesn't know that — it'll happily keep computing 2 infinite tweens per
-    // float forever regardless of visibility, which was the real battery/CPU
-    // drain on phones. Only animate the ones actually shown there.
+    // a weak desktop still shows all 8 (CSS only hides the extra 4 below
+    // 999px), so this slice stays tied to what's actually on screen — the
+    // scroll-scrub cut further down is the one gated by device capability
     const floats = gsap.utils.toArray('.hero__float').slice(0, isMobile ? 4 : undefined)
+    const lowPower = isLowPowerDevice()
     // sizing itself now scales via CSS (--float-w clamp), so GSAP only owns motion, not scale
     const baseScale = 1
 
@@ -84,9 +85,9 @@ export default function Hero() {
         // moment you started scrolling.
         //
         // scrub ties this to the scroll listener firing continuously — fine
-        // on desktop, but on a weaker mobile CPU it's a big chunk of the jank.
-        // Ambient stamps on mobile just sit there instead.
-        if (!isMobile) {
+        // on solid hardware, but a big chunk of the jank on anything weaker
+        // (phone or old desktop). Ambient stamps just sit there instead.
+        if (!lowPower) {
           gsap.to(el, {
             yPercent: fall,
             rotate: 0,
@@ -99,26 +100,27 @@ export default function Hero() {
             },
           })
         }
-        // one combined idle sway instead of two separate infinite tweens per
-        // float — same effect, half the ongoing animation work. On desktop
-        // it idles between pointermove events, which drive quickX/quickRotate
-        // on top of it.
-        gsap.to(inner, {
-          y: -10,
-          x: 10,
-          rotation: 6,
-          duration: 2.8 + Math.random(),
-          yoyo: true,
-          repeat: -1,
-          ease: 'sine.inOut',
-        })
+        // this idle sway runs forever regardless of scroll — a clip-path'd,
+        // shadowed element animating its transform nonstop is real ongoing
+        // repaint cost. On weak hardware the float just settles after entering.
+        if (!lowPower) {
+          gsap.to(inner, {
+            y: -10,
+            x: 10,
+            rotation: 6,
+            duration: 2.8 + Math.random(),
+            yoyo: true,
+            repeat: -1,
+            ease: 'sine.inOut',
+          })
 
-        const depth = 14 + i * 4
-        quickX.push(gsap.quickTo(inner, 'x', { duration: 0.7, ease: 'power3' }))
-        quickRotate.push(
-          gsap.quickTo(inner, 'rotation', { duration: 0.7, ease: 'power3' }),
-        )
-        quickX[i].depth = depth
+          const depth = 14 + i * 4
+          quickX.push(gsap.quickTo(inner, 'x', { duration: 0.7, ease: 'power3' }))
+          quickRotate.push(
+            gsap.quickTo(inner, 'rotation', { duration: 0.7, ease: 'power3' }),
+          )
+          quickX[i].depth = depth
+        }
       })
     }, rootRef)
 

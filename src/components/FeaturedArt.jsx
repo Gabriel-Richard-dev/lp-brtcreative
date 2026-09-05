@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import gsap from 'gsap'
 import { useTilt3D } from '../hooks/useTilt3D'
+import { isLowPowerDevice } from '../lib/performance'
 import GhostCursor from './GhostCursor'
 import artwork from '../assets/process/09-final.webp'
 
@@ -20,6 +21,7 @@ export default function FeaturedArt() {
   const [isMobile] = useState(() => window.matchMedia('(max-width: 999px)').matches)
 
   useEffect(() => {
+    if (isLowPowerDevice()) return
     // symmetric -10/+10 swing so the card rests centered on average,
     // instead of drifting from 0 to +10 and spending most of its time leaning right
     gsap.set(wrapRef.current, { rotateY: -10, rotateX: 4 })

@@ -2,6 +2,7 @@
 import React, { useRef } from "react";
 import { AnimatePresence, motion, useMotionValueEvent, useScroll } from "motion/react";
 import { cn } from "@/lib/utils";
+import { isLowPowerDevice } from "@/lib/performance";
 
 // jagged "torn paper" edge sweeping down from r=0 (hidden) to r=100 (fully revealed)
 function tornClip(r) {
@@ -38,6 +39,9 @@ export const StickyScroll = ({
   });
 
   const active = content[activeCard];
+  // the torn clip-path wipe repaints a large image every frame for 0.6s on
+  // every step change — a plain opacity crossfade is nearly free by comparison
+  const lowPower = isLowPowerDevice();
 
   return (
     <div className="relative min-h-[800vh]" ref={ref}>
@@ -53,10 +57,10 @@ export const StickyScroll = ({
             <motion.div
               key={activeCard}
               style={{ zIndex: activeCard }}
-              initial={{ clipPath: tornClip(-8) }}
-              animate={{ clipPath: tornClip(108) }}
+              initial={lowPower ? { opacity: 0 } : { clipPath: tornClip(-8) }}
+              animate={lowPower ? { opacity: 1 } : { clipPath: tornClip(108) }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 0.6, ease: "easeInOut" }}
+              transition={{ duration: lowPower ? 0.35 : 0.6, ease: "easeInOut" }}
               className="absolute inset-0"
             >
               {active.content ?? null}
