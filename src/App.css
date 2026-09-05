@@ -774,6 +774,9 @@
   display: flex;
   width: max-content;
   animation: marquee-scroll 26s linear infinite;
+  /* the "torn" ancestor's clip-path can otherwise keep this off its own
+     compositor layer, forcing a repaint of the whole strip every frame */
+  will-change: transform;
 }
 
 .marquee__item {
