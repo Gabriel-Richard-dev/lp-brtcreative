@@ -6,22 +6,20 @@ import { portfolio } from '../data/portfolio'
 import Spotlight from './Spotlight'
 import FlipWords from './FlipWords'
 import CircularText from './CircularText'
-import MacbookSection from './MacbookSection'
-import GhostCursor from './GhostCursor'
+import FeaturedArt from './FeaturedArt'
 
 gsap.registerPlugin(ScrollTrigger)
 
 const VERBS = ['vendem', 'convertem', 'engajam', 'param o feed']
 
+// only the right-side stamps — the left side sits right on top of the
+// left-aligned hero copy now, there's no width where those are safe anymore
 const FLOATS = [
-  { top: '4%', left: '4%', rot: -8, w: 150, fall: 420, index: 0 },
-  { top: '6%', left: '68%', rot: 7, w: 160, fall: 480, index: 1 },
-  { top: '58%', left: '3%', rot: 5, w: 110, fall: 260, index: 2 },
-  { top: '56%', left: '70%', rot: -5, w: 120, fall: 300, index: 3 },
+  { top: '6%', left: '68%', rot: 7, w: 160, fall: 480, index: 0 },
+  { top: '56%', left: '70%', rot: -5, w: 120, fall: 300, index: 1 },
 ]
 
 const showcase = portfolio.slice(0, FLOATS.length)
-const FEATURED = showcase[0]
 
 export default function Hero() {
   const rootRef = useRef(null)
@@ -30,8 +28,8 @@ export default function Hero() {
   useEffect(() => {
     const words = rootRef.current.querySelectorAll('.hero__word')
     const floats = gsap.utils.toArray('.hero__float')
-    const isMobile = window.matchMedia('(max-width: 760px)').matches
-    const baseScale = isMobile ? 0.55 : 1
+    // sizing itself now scales via CSS (--float-w clamp), so GSAP only owns motion, not scale
+    const baseScale = 1
 
     const entrances = [
       animate(words, {
@@ -126,7 +124,7 @@ export default function Hero() {
                 style={{
                   top: f.top,
                   left: f.left,
-                  width: `${f.w}px`,
+                  '--float-w': `${f.w}px`,
                   '--rot': `${f.rot}deg`,
                 }}
               >
@@ -148,48 +146,48 @@ export default function Hero() {
           </div>
 
           <div className="container hero__inner">
-            <div className="hero__frame">
-              <span className="hero__frame-handle hero__frame-handle--tl" />
-              <span className="hero__frame-handle hero__frame-handle--tr" />
-              <span className="hero__frame-handle hero__frame-handle--bl" />
-              <span className="hero__frame-handle hero__frame-handle--br" />
-              <span className="hero__frame-resize">↗</span>
-            </div>
+            <div className="hero__copy">
+              <div className="hero__frame">
+                <span className="hero__frame-handle hero__frame-handle--tl" />
+                <span className="hero__frame-handle hero__frame-handle--tr" />
+                <span className="hero__frame-handle hero__frame-handle--bl" />
+                <span className="hero__frame-handle hero__frame-handle--br" />
+                <span className="hero__frame-resize">↗</span>
+              </div>
 
-            <h1 className="hero__title">
-              {'Artes que'.split(' ').map((w) => (
-                <span className="hero__word" key={w}>
-                  {w}{' '}
+              <h1 className="hero__title">
+                {'Artes que'.split(' ').map((w) => (
+                  <span className="hero__word" key={w}>
+                    {w}{' '}
+                  </span>
+                ))}
+                <span className="hero__word hero__word--accent">
+                  <FlipWords words={VERBS} />
                 </span>
-              ))}
-              <span className="hero__word hero__word--accent">
-                <FlipWords words={VERBS} />
-              </span>
-            </h1>
-            <p className="hero__sub">
-              BRTcreative cria identidade visual, social media e peças de campanha para marcas e
-              igrejas que querem parar o feed. Direção de arte pensada pra converter.
-            </p>
-            <div className="hero__cta">
-              <a href="#contato" className="btn btn--primary">
-                Iniciar projeto
-              </a>
-              <a href="#trabalhos" className="btn btn--ghost">
-                Ver portfólio
-              </a>
+              </h1>
+              <p className="hero__sub">
+                BRTcreative cria identidade visual, social media e peças de campanha para marcas e
+                igrejas que querem parar o feed. Direção de arte pensada pra converter.
+              </p>
+              <div className="hero__cta">
+                <a href="#contato" className="btn btn--primary">
+                  Iniciar projeto
+                </a>
+                <a href="#trabalhos" className="btn btn--ghost">
+                  Ver portfólio
+                </a>
+              </div>
+
+              <CircularText
+                text="BRTCREATIVE • DIREÇÃO DE ARTE • "
+                className="hero__badge"
+                icon="↓"
+              />
             </div>
 
-            <CircularText
-              text="BRTCREATIVE • DIREÇÃO DE ARTE • "
-              className="hero__badge"
-              icon="↓"
-            />
+            <FeaturedArt />
           </div>
-
-          <GhostCursor label="Benício" className="hero__ghost-cursor" />
         </div>
-
-        <MacbookSection artwork={FEATURED} />
       </section>
     </Spotlight>
   )

@@ -17,10 +17,12 @@ export default function Portfolio() {
   useReveal({ targets: '.portfolio__card', stagger: 60, watch: [filter], rootRef: gridRef })
   const tilt = useTilt3D()
 
-  const items = useMemo(
-    () => (filter === 'Todos' ? portfolio : portfolio.filter((p) => p.category === filter)),
-    [filter],
-  )
+  const items = useMemo(() => {
+    const list = filter === 'Todos' ? portfolio : portfolio.filter((p) => p.category === filter)
+    // keep the grid's last row full (3 columns on desktop) instead of ending on a gap
+    const closed = Math.floor(list.length / 3) * 3
+    return list.slice(0, closed || list.length)
+  }, [filter])
 
   useEffect(() => {
     const ctx = gsap.context(() => {

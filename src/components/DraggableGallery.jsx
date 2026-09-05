@@ -71,7 +71,7 @@ export default function DraggableGallery() {
           key={item.src}
           style={{ ...CORNERS[i], '--rot': CORNERS[i].rot }}
         >
-          <DraggableCardBody className="drag-scatter__card torn p-0 min-h-0 w-[110px] aspect-[3/4] rounded-none bg-transparent shadow-none dark:bg-transparent">
+          <DraggableCardBody className="drag-scatter__card torn p-0 min-h-0 w-[clamp(80px,7vw,110px)] aspect-[3/4] rounded-none bg-transparent shadow-none dark:bg-transparent">
             <img
               src={item.src}
               alt={item.title}

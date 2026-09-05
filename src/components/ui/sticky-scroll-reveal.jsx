@@ -39,8 +39,8 @@ export const StickyScroll = ({
   const active = content[activeCard];
 
   return (
-    <div className="relative lg:min-h-[800vh]" ref={ref}>
-      <div className="flex flex-col items-center gap-6 lg:sticky lg:top-16">
+    <div className="relative min-h-[800vh]" ref={ref}>
+      <div className="flex flex-col items-center gap-6 sticky top-16">
         <div
           className={cn(
             "relative mx-auto w-full max-w-sm overflow-hidden rounded-md bg-white",
