@@ -1,12 +1,14 @@
+import { Suspense, lazy } from 'react'
 import './App.css'
 import FloatingLogo from './components/FloatingLogo'
 import Hero from './components/Hero'
-import Marquee from './components/Marquee'
-import About from './components/About'
-import Process from './components/Process'
-import Portfolio from './components/Portfolio'
-import Contact from './components/Contact'
-import Footer from './components/Footer'
+
+const Marquee = lazy(() => import('./components/Marquee'))
+const About = lazy(() => import('./components/About'))
+const Process = lazy(() => import('./components/Process'))
+const Portfolio = lazy(() => import('./components/Portfolio'))
+const Contact = lazy(() => import('./components/Contact'))
+const Footer = lazy(() => import('./components/Footer'))
 
 export default function App() {
   return (
@@ -14,13 +16,17 @@ export default function App() {
       <FloatingLogo />
       <main>
         <Hero />
-        <Marquee />
-        <About />
-        <Process />
-        <Portfolio />
-        <Contact />
+        <Suspense fallback={null}>
+          <Marquee />
+          <About />
+          <Process />
+          <Portfolio />
+          <Contact />
+        </Suspense>
       </main>
-      <Footer />
+      <Suspense fallback={null}>
+        <Footer />
+      </Suspense>
     </>
   )
 }

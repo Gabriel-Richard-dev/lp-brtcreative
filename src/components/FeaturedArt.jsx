@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import gsap from 'gsap'
 import { useTilt3D } from '../hooks/useTilt3D'
 import GhostCursor from './GhostCursor'
-import artwork from '../assets/process/09-final.jpeg'
+import artwork from '../assets/process/09-final.webp'
 
 // the default path is tuned for the wide desktop card — on the narrower
 // mobile card it would wander clean off the screen

@@ -33,7 +33,12 @@ export default function Hero() {
 
   useEffect(() => {
     const words = rootRef.current.querySelectorAll('.hero__word')
-    const floats = gsap.utils.toArray('.hero__float')
+    const isMobile = window.matchMedia('(max-width: 999px)').matches
+    // the extra 4 corner stamps are display:none on mobile (CSS) but GSAP
+    // doesn't know that — it'll happily keep computing 2 infinite tweens per
+    // float forever regardless of visibility, which was the real battery/CPU
+    // drain on phones. Only animate the ones actually shown there.
+    const floats = gsap.utils.toArray('.hero__float').slice(0, isMobile ? 4 : undefined)
     // sizing itself now scales via CSS (--float-w clamp), so GSAP only owns motion, not scale
     const baseScale = 1
 
@@ -88,20 +93,15 @@ export default function Hero() {
             scrub: 0.6,
           },
         })
+        // one combined idle sway instead of two separate infinite tweens per
+        // float — same effect, half the ongoing animation work. On desktop
+        // it idles between pointermove events, which drive quickX/quickRotate
+        // on top of it.
         gsap.to(inner, {
           y: -10,
-          duration: 2.4 + Math.random(),
-          yoyo: true,
-          repeat: -1,
-          ease: 'sine.inOut',
-        })
-
-        // same idle drift on every device — on desktop it just idles between
-        // pointermove events, which drive quickX/quickRotate on top of it
-        gsap.to(inner, {
           x: 10,
           rotation: 6,
-          duration: 3.2 + Math.random(),
+          duration: 2.8 + Math.random(),
           yoyo: true,
           repeat: -1,
           ease: 'sine.inOut',
