@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import { animate, stagger } from 'animejs'
+import gsap from 'gsap'
 
 export function useReveal({
   targets = '[data-reveal]',
@@ -27,12 +27,12 @@ export function useReveal({
       (entries, obs) => {
         const visible = entries.filter((e) => e.isIntersecting).map((e) => e.target)
         if (!visible.length) return
-        animate(visible, {
-          opacity: [0, 1],
-          translateY: [translateY, 0],
-          duration: 900,
-          delay: stagger(staggerMs),
-          ease: 'outExpo',
+        gsap.to(visible, {
+          opacity: 1,
+          y: 0,
+          duration: 0.9,
+          stagger: staggerMs / 1000,
+          ease: 'expo.out',
         })
         visible.forEach((el) => obs.unobserve(el))
       },

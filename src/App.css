@@ -1135,13 +1135,10 @@
     grid-template-columns: 1fr;
   }
 
+  /* static on a phone anyway (see About.jsx's isLowPowerDevice check) —
+     not worth the layout space without the spin */
   .about__wheel {
-    width: clamp(260px, 78vw, 380px);
-    margin-top: 32px;
-  }
-
-  .about__wheel-chip {
-    width: 96px;
+    display: none;
   }
 }
 

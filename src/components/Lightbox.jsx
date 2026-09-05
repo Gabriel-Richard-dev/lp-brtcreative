@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import { animate } from 'animejs'
+import gsap from 'gsap'
 
 export default function Lightbox({ item, onClose }) {
   const boxRef = useRef(null)
@@ -8,20 +8,23 @@ export default function Lightbox({ item, onClose }) {
 
   useEffect(() => {
     const entrances = [
-      animate('.lightbox__backdrop', { opacity: [0, 1], duration: 250, ease: 'outQuad' }),
-      animate(boxRef.current, {
-        opacity: [0, 1],
-        scale: [0.94, 1],
-        duration: 350,
-        ease: 'outExpo',
-      }),
+      gsap.fromTo(
+        '.lightbox__backdrop',
+        { opacity: 0 },
+        { opacity: 1, duration: 0.25, ease: 'power2.out' },
+      ),
+      gsap.fromTo(
+        boxRef.current,
+        { opacity: 0, scale: 0.94 },
+        { opacity: 1, scale: 1, duration: 0.35, ease: 'expo.out' },
+      ),
     ]
 
     const onKey = (e) => e.key === 'Escape' && onCloseRef.current()
     window.addEventListener('keydown', onKey)
     return () => {
       window.removeEventListener('keydown', onKey)
-      entrances.forEach((a) => a.cancel())
+      entrances.forEach((a) => a.kill())
     }
   }, [])
 

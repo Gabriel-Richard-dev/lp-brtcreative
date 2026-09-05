@@ -1,5 +1,4 @@
 import { useEffect, useRef } from 'react'
-import { animate, stagger } from 'animejs'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { portfolio } from '../data/portfolio'
@@ -44,21 +43,16 @@ export default function Hero() {
     const baseScale = 1
 
     const entrances = [
-      animate(words, {
-        opacity: [0, 1],
-        translateY: [48, 0],
-        rotate: [4, 0],
-        duration: 900,
-        delay: stagger(70),
-        ease: 'outExpo',
-      }),
-      animate('.hero__sub, .hero__cta', {
-        opacity: [0, 1],
-        translateY: [16, 0],
-        duration: 700,
-        delay: stagger(90, { start: 500 }),
-        ease: 'outQuad',
-      }),
+      gsap.fromTo(
+        words,
+        { opacity: 0, y: 48, rotate: 4 },
+        { opacity: 1, y: 0, rotate: 0, duration: 0.9, stagger: 0.07, ease: 'expo.out' },
+      ),
+      gsap.fromTo(
+        '.hero__sub, .hero__cta',
+        { opacity: 0, y: 16 },
+        { opacity: 1, y: 0, duration: 0.7, stagger: 0.09, delay: 0.5, ease: 'power2.out' },
+      ),
     ]
 
     const quickX = []
@@ -141,7 +135,7 @@ export default function Hero() {
     })
 
     return () => {
-      entrances.forEach((a) => a.cancel())
+      entrances.forEach((a) => a.kill())
       stageRef.current?.removeEventListener('pointermove', onPointerMove)
       badgeTrigger.kill()
       ctx.revert()

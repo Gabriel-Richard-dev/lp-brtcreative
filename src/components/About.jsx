@@ -3,6 +3,7 @@ import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { useReveal } from '../hooks/useReveal'
 import { portfolio } from '../data/portfolio'
+import { isLowPowerDevice } from '../lib/performance'
 import ToolDock from './ToolDock'
 
 gsap.registerPlugin(ScrollTrigger)
@@ -16,6 +17,11 @@ export default function About() {
   useEffect(() => {
     const chips = gsap.utils.toArray('.about__wheel-chip')
     gsap.set(chips, { xPercent: -50, yPercent: -50 })
+
+    // writes a transform to the ring AND all 7 chips on every scroll tick
+    // across the whole section — real continuous cost, not worth it on
+    // weaker hardware for a decorative spin
+    if (isLowPowerDevice()) return
 
     const tween = gsap.to(ringRef.current, {
       rotation: 360,

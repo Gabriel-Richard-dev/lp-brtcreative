@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { animate } from 'animejs'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { portfolio, categories } from '../data/portfolio'
@@ -14,7 +13,7 @@ export default function Portfolio() {
   const [active, setActive] = useState(null)
   const ref = useReveal({ targets: '.portfolio__head' })
   const gridRef = useRef(null)
-  useReveal({ targets: '.portfolio__card', stagger: 60, watch: [filter], rootRef: gridRef })
+  useReveal({ targets: '.portfolio__card', stagger: 40, translateY: 0, watch: [filter], rootRef: gridRef })
   const tilt = useTilt3D()
 
   const items = useMemo(() => {
@@ -47,10 +46,10 @@ export default function Portfolio() {
   }, [items])
 
   function handleHover(e, entering) {
-    animate(e.currentTarget.querySelector('.portfolio__frame'), {
+    gsap.to(e.currentTarget.querySelector('.portfolio__frame'), {
       scale: entering ? 1.08 : 1,
-      duration: 500,
-      ease: 'outQuad',
+      duration: 0.5,
+      ease: 'power2.out',
     })
   }
 
