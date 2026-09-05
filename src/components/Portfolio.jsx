@@ -41,6 +41,7 @@ export default function Portfolio() {
   }
 
   return (
+    <>
     <section id="trabalhos" className="portfolio" ref={ref}>
       <div className="container">
         <div className="portfolio__head" data-reveal>
@@ -91,8 +92,12 @@ export default function Portfolio() {
           ))}
         </div>
       </div>
-
-      {active && <Lightbox item={active} onClose={() => setActive(null)} />}
     </section>
+    {/* rendered outside .portfolio on purpose — that section has
+        content-visibility:auto, which implies containment and makes it a
+        containing block for position:fixed descendants, breaking this
+        modal's centering on the real viewport */}
+    {active && <Lightbox item={active} onClose={() => setActive(null)} />}
+    </>
   )
 }

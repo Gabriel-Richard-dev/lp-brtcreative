@@ -858,10 +858,65 @@
   border-top: 1px solid var(--line);
 }
 
+/* fixed to a screen corner, faded in/out by the section's own visibility
+   instead of sticky/in-flow — this section runs ~7000px tall, so anything
+   placed under the header scrolls out of sight almost immediately */
+.process__scroll-hint {
+  position: fixed;
+  right: 28px;
+  bottom: 28px;
+  z-index: 40;
+  width: 38px;
+  height: 62px;
+  border: 3px solid var(--line);
+  border-radius: 20px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.process__scroll-hint.is-visible {
+  opacity: 1;
+}
+
+.process__scroll-hint-dot {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  width: 6px;
+  height: 12px;
+  border-radius: 3px;
+  background: var(--brand);
+  transform: translateX(-50%);
+  animation: process-scroll-dot 1.6s ease-in-out infinite;
+}
+
+@keyframes process-scroll-dot {
+  0% {
+    transform: translate(-50%, 0);
+    opacity: 1;
+  }
+  70% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -24px);
+    opacity: 0;
+  }
+}
+
+@media (max-width: 640px) {
+  .process__scroll-hint {
+    right: 16px;
+    bottom: 16px;
+  }
+}
+
 .process__head {
   text-align: center;
   max-width: 640px;
 }
+
 
 .process__title {
   font-family: var(--font-display);

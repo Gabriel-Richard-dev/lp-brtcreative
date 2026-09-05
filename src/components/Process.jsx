@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from 'react'
 import {
   IconBookmark,
   IconBrush,
@@ -87,8 +88,20 @@ const CONTENT = [
 })
 
 export default function Process() {
+  const sectionRef = useRef(null)
+  const [inView, setInView] = useState(false)
+
+  useEffect(() => {
+    const el = sectionRef.current
+    const observer = new IntersectionObserver(([entry]) => setInView(entry.isIntersecting), {
+      threshold: 0.05,
+    })
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [])
+
   return (
-    <section className="process">
+    <section className="process" ref={sectionRef}>
       <div className="container">
         <StickyScroll
           content={CONTENT}
@@ -100,6 +113,9 @@ export default function Process() {
             </div>
           }
         />
+      </div>
+      <div className={`process__scroll-hint ${inView ? 'is-visible' : ''}`} aria-hidden="true">
+        <span className="process__scroll-hint-dot" />
       </div>
     </section>
   )

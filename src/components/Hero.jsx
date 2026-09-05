@@ -87,22 +87,21 @@ export default function Hero() {
         // tween for the same property, reading as a sudden size jump the
         // moment you started scrolling.
         //
-        // scrub ties this to the scroll listener firing continuously — fine
-        // on solid hardware, but a big chunk of the jank on anything weaker
-        // (phone or old desktop). Ambient stamps just sit there instead.
-        if (!lowPower) {
-          gsap.to(el, {
-            yPercent: fall,
-            rotate: 0,
-            ease: 'none',
-            scrollTrigger: {
-              trigger: stageRef.current,
-              start: 'top top',
-              end: '+=900',
-              scrub: 0.6,
-            },
-          })
-        }
+        // scrub only ties this to the scroll position (no per-frame cost
+        // beyond a normal scroll listener) — the real jank on mobile turned
+        // out to be elsewhere (fixed backdrop-filter, background-attachment,
+        // an unrelated infinite GSAP loop), so this runs everywhere now.
+        gsap.to(el, {
+          yPercent: fall,
+          rotate: 0,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: stageRef.current,
+            start: 'top top',
+            end: '+=900',
+            scrub: 0.6,
+          },
+        })
         // this idle sway runs forever regardless of scroll — a clip-path'd,
         // shadowed element animating its transform nonstop is real ongoing
         // repaint cost. On weak hardware the float just settles after entering.
