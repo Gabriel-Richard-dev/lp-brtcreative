@@ -93,6 +93,25 @@ body {
   overflow-x: hidden;
 }
 
+@media (max-width: 999px) {
+  /* background-attachment:fixed forces a full repaint of this layer on every
+     scroll frame on most mobile engines — desktop compositors don't pay
+     that cost, which is why "desktop site" mode felt smooth on the same
+     phone. Scrolls with the page on mobile instead; texture is unchanged
+     visually, it just stops being pinned. */
+  body {
+    background-attachment: scroll;
+  }
+
+  /* full-viewport fixed overlay + blend mode forces a recomposite against
+     the whole page on every scroll frame too — same class of cost as the
+     background above. Drop it on mobile; it's a 5%-opacity decorative
+     grain, not worth the scroll-jank tax. */
+  body::after {
+    display: none;
+  }
+}
+
 img {
   max-width: 100%;
   display: block;
