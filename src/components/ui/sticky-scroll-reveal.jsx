@@ -12,6 +12,7 @@ function tornClip(r) {
 export const StickyScroll = ({
   content,
   contentClassName,
+  header,
 }) => {
   const [activeCard, setActiveCard] = React.useState(0);
   const ref = useRef(null);
@@ -41,6 +42,7 @@ export const StickyScroll = ({
   return (
     <div className="relative min-h-[800vh]" ref={ref}>
       <div className="flex flex-col items-center gap-6 sticky top-16">
+        {header}
         <div
           className={cn(
             "relative mx-auto w-full max-w-sm overflow-hidden rounded-md bg-white",

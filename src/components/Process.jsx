@@ -117,14 +117,15 @@ export default function Process() {
   return (
     <section className="process">
       <div className="container">
-        <p className="eyebrow">Como funciona</p>
-        <h2 className="process__title">O design se monta em camadas</h2>
-      </div>
-
-      <div className="container">
         <StickyScroll
           content={CONTENT}
           contentClassName="aspect-[1080/1450] h-auto w-full max-w-md bg-transparent lg:w-[32rem]"
+          header={
+            <div className="process__head">
+              <p className="eyebrow">Como funciona</p>
+              <h2 className="process__title">O design se monta em camadas</h2>
+            </div>
+          }
         />
       </div>
     </section>

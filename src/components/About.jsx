@@ -43,12 +43,13 @@ export default function About() {
             Sobre
           </p>
           <h2 className="about__title" data-reveal>
-            Direção de arte com identidade própria, feita pra parar o polegar.
+            Arte com a nossa cara, feita pra travar o dedo no scroll.
           </h2>
           <p className="about__text" data-reveal>
-            A BRTcreative desenha peças para redes sociais, campanhas de moda e comunicação de
-            igreja com o mesmo cuidado: composição limpa, tipografia forte e uma paleta que
-            respeita a marca. Cada arte nasce de um objetivo — vender, convidar ou emocionar.
+            A gente bola peça pra rede social, campanha de moda ou comunicação de igreja com o
+            mesmo capricho: composição que funciona, tipografia que grita na medida certa e uma
+            paleta que não trai a marca. Toda arte sai daqui com um motivo pra existir — vender,
+            convidar ou arrancar aquele "uau".
           </p>
           <ToolDock data-reveal />
         </div>

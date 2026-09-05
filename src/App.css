@@ -1,45 +1,3 @@
-/* Draggable art scattered in the page corners (fixed, persists across scroll) */
-.drag-scatter {
-  position: fixed;
-  inset: 0;
-  z-index: 30;
-  pointer-events: none;
-}
-
-.drag-scatter__slot {
-  position: absolute;
-  transform: rotate(var(--rot, 0deg));
-  pointer-events: auto;
-}
-
-.drag-scatter__card {
-  background: var(--paper) !important;
-  padding: 6px !important;
-  box-shadow: 0 14px 26px var(--paper-shadow) !important;
-  cursor: grab;
-}
-
-.drag-scatter__card:active {
-  cursor: grabbing;
-}
-
-@media (max-width: 1400px) {
-  /* the upper-left diagonal pair + the two upper-right cards sit closest to
-     the title/subtitle — drop those first, keep the lower four longer */
-  .drag-scatter__slot:nth-child(1),
-  .drag-scatter__slot:nth-child(2),
-  .drag-scatter__slot:nth-child(4),
-  .drag-scatter__slot:nth-child(5) {
-    display: none;
-  }
-}
-
-@media (max-width: 1000px) {
-  /* below the split layout there's no room left for any of them */
-  .drag-scatter {
-    display: none;
-  }
-}
 
 /* hero canvas selection frame + AI-prompt toolbar, Figma/Canva-style */
 .hero__frame {
@@ -121,8 +79,8 @@
 }
 
 @media (max-width: 760px) {
-  /* decorative, mouse-shaped flourishes don't read well cramped on a touch screen */
-  .ghost-cursor,
+  /* hover-only flourishes don't read on a touch screen — but the autonomous
+     ghost cursor on the featured art isn't hover-based, so it stays */
   .hero__float .design-select,
   .hero__float .design-tag,
   .hero__float .design-handle {
@@ -378,69 +336,6 @@
   position: relative;
 }
 
-@media (max-width: 999px) {
-  /* interleave title -> featured art -> rest of the copy, without touching
-     the desktop DOM/grid: dissolve .hero__copy so its children become direct
-     flex items of .hero__inner, then reorder everything with `order` */
-  .hero__inner {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .hero__copy {
-    display: contents;
-  }
-
-  .hero__frame {
-    display: none;
-  }
-
-  .hero__title {
-    order: 1;
-  }
-
-  .hero__featured-wrap {
-    order: 2;
-    margin: 24px auto;
-  }
-
-  .hero__sub {
-    order: 3;
-  }
-
-  .hero__cta {
-    order: 4;
-  }
-
-  .hero__badge {
-    order: 5;
-  }
-}
-
-@media (min-width: 1000px) {
-  .hero__inner {
-    max-width: 1280px;
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
-    align-items: center;
-    gap: 56px;
-    text-align: left;
-  }
-
-  .hero__sub {
-    margin-left: 0;
-  }
-
-  .hero__cta {
-    justify-content: flex-start;
-  }
-
-  .circular-text {
-    margin-left: 0;
-  }
-}
-
 .hero__title {
   font-family: var(--font-display);
   font-size: clamp(40px, 6.4vw, 84px);
@@ -474,10 +369,87 @@
   justify-content: center;
 }
 
+@media (max-width: 999px) {
+  /* interleave title -> featured art -> rest of the copy, without touching
+     the desktop DOM/grid: dissolve .hero__copy so its children become direct
+     flex items of .hero__inner, then reorder everything with `order` */
+  .hero__inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .hero__copy {
+    display: contents;
+  }
+
+  .hero__frame {
+    display: none;
+  }
+
+  .hero__title {
+    order: 1;
+    font-size: clamp(30px, 9vw, 44px);
+    margin-bottom: 10px;
+  }
+
+  /* "param o feed" is much longer than the other flip words — force the
+     accent onto its own line always, so the break point never jumps around */
+  .hero__word--accent {
+    display: block;
+  }
+
+  /* the scroll-down badge moves onto the featured art itself on mobile — see .hero__featured-badge */
+  .hero__badge {
+    display: none;
+  }
+
+  .hero__featured-wrap {
+    order: 2;
+    margin: 0 auto 24px;
+  }
+
+  .hero__sub {
+    display: none;
+  }
+
+  .hero__cta {
+    order: 3;
+    margin-top: 32px;
+  }
+}
+
+@media (min-width: 1000px) {
+  .hero__inner {
+    max-width: 1280px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 56px;
+    text-align: left;
+  }
+
+  .hero__sub {
+    margin-left: 0;
+  }
+
+  .hero__cta {
+    justify-content: flex-start;
+  }
+
+  .circular-text {
+    margin-left: 0;
+  }
+}
+
+/* one background-art system, same on every screen size: one stamp per
+   corner, dimmed, non-interactive */
 .hero__floats {
   position: absolute;
   inset: 0;
   z-index: 1;
+  opacity: 0.5;
+  filter: blur(0.5px);
 }
 
 .hero__float {
@@ -488,8 +460,42 @@
   padding: 8px;
   box-shadow: 0 20px 40px var(--paper-shadow);
   transform: rotate(var(--rot, 0deg));
-  opacity: 0;
   pointer-events: none;
+  /* GSAP's entrance tween owns this element's opacity and animates it from 0
+     toward whatever it reads as "current" — force it visible so the ambient
+     background treatment doesn't depend on that timing */
+  opacity: 1 !important;
+}
+
+/* corner positions — inline top/left (from Hero.jsx) need !important to lose here */
+.hero__floats > :nth-child(1) {
+  top: 6%;
+  left: 8% !important;
+}
+
+.hero__floats > :nth-child(2) {
+  top: 72% !important;
+  left: 68% !important;
+}
+
+.hero__floats > :nth-child(3) {
+  top: 68% !important;
+  left: 6% !important;
+}
+
+.hero__floats > :nth-child(4) {
+  top: 8% !important;
+  left: 72% !important;
+}
+
+@media (max-width: 999px) {
+  /* the extra 4 corner stamps only have room on the wider desktop canvas */
+  .hero__floats > :nth-child(5),
+  .hero__floats > :nth-child(6),
+  .hero__floats > :nth-child(7),
+  .hero__floats > :nth-child(8) {
+    display: none;
+  }
 }
 
 @media (max-width: 1300px) {
@@ -498,21 +504,7 @@
   }
 }
 
-@media (max-width: 1150px) {
-  /* the text column keeps shrinking — drop the bottom-right stamp first */
-  .hero__floats > :nth-child(2) {
-    display: none;
-  }
-}
-
 @media (max-width: 999px) {
-  /* below the split layout there's no side column left to frame — fade the
-     stamps into ambient background texture instead of hiding them outright */
-  .hero__floats {
-    opacity: 0.4;
-    filter: blur(0.5px);
-  }
-
   .hero__float {
     width: clamp(70px, 24vw, 130px);
   }
@@ -577,6 +569,56 @@
   top: 58%;
   left: 52%;
   z-index: 6;
+}
+
+.hero__featured-handle {
+  display: none;
+}
+
+@media (max-width: 999px) {
+  .hero__featured-cursor {
+    transform: scale(0.8);
+  }
+
+  /* Photoshop-style marquee selection peeking out from behind the art —
+     lives on .hero__featured (not the wrap) so it tilts together with the card.
+     placed before the <img> in the DOM (not negative z-index — that gets
+     unpredictable inside a preserve-3d/perspective context) so it paints
+     underneath naturally, wherever it would otherwise overlap the image */
+  .hero__featured::before {
+    content: '';
+    position: absolute;
+    inset: -16px;
+    border: 1.5px dashed var(--brand);
+    pointer-events: none;
+  }
+
+  .hero__featured-handle {
+    display: block;
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background: #fff;
+    border: 1.5px solid var(--brand);
+    pointer-events: none;
+  }
+
+  .hero__featured-handle--tl {
+    top: -16px;
+    left: -16px;
+  }
+  .hero__featured-handle--tr {
+    top: -16px;
+    right: -16px;
+  }
+  .hero__featured-handle--bl {
+    bottom: -16px;
+    left: -16px;
+  }
+  .hero__featured-handle--br {
+    bottom: -16px;
+    right: -16px;
+  }
 }
 
 @media (min-width: 1000px) {
@@ -646,6 +688,40 @@
   .circular-text__icon {
     width: 30px;
     height: 30px;
+  }
+}
+
+.hero__featured-badge {
+  display: none;
+}
+
+@media (max-width: 999px) {
+  /* back in normal flow, right after the CTA — instead of trailing the copy
+     as a spinning ring, see .hero__badge{display:none} above.
+     kept deliberately plain: just an icon that bounces */
+  .hero__featured-badge {
+    display: flex;
+    order: 4;
+    align-items: center;
+    justify-content: center;
+    margin-top: 28px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--brand);
+    color: #fff;
+    font-size: 16px;
+    animation: hero-badge-bounce 1.6s ease-in-out infinite;
+  }
+}
+
+@keyframes hero-badge-bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(6px);
   }
 }
 
@@ -719,13 +795,17 @@
   border-top: 1px solid var(--line);
 }
 
+.process__head {
+  text-align: center;
+  max-width: 640px;
+}
+
 .process__title {
   font-family: var(--font-display);
   font-size: clamp(28px, 3.6vw, 44px);
   font-weight: 600;
   letter-spacing: -0.02em;
-  margin: 8px 0 56px;
-  max-width: 640px;
+  margin: 8px 0 0;
 }
 
 /* the "canvas" that builds up through the sticky-scroll steps */
@@ -1068,6 +1148,8 @@
 .portfolio__head {
   display: flex;
   flex-direction: column;
+  align-items: center;
+  text-align: center;
   gap: 20px;
   margin-bottom: 56px;
 }
@@ -1082,6 +1164,8 @@
 
 .portfolio__filters {
   display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
   gap: 10px;
   margin-top: 16px;
 }

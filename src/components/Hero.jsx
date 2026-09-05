@@ -12,14 +12,20 @@ gsap.registerPlugin(ScrollTrigger)
 
 const VERBS = ['vendem', 'convertem', 'engajam', 'param o feed']
 
-// only the right-side stamps — the left side sits right on top of the
-// left-aligned hero copy now, there's no width where those are safe anymore
+// 8 corners for desktop's wider canvas — the last four only ever show on
+// mobile up to nth-child(4), see .hero__floats > :nth-child(5..8){display:none}
 const FLOATS = [
   { top: '6%', left: '68%', rot: 7, w: 160, fall: 480, index: 0 },
   { top: '56%', left: '70%', rot: -5, w: 120, fall: 300, index: 1 },
+  { top: '30%', left: '8%', rot: -6, w: 130, fall: 260, index: 2 },
+  { top: '80%', left: '55%', rot: 5, w: 110, fall: 340, index: 3 },
+  { top: '4%', left: '30%', rot: -4, w: 100, fall: 220, index: 4 },
+  { top: '45%', left: '88%', rot: 6, w: 120, fall: 400, index: 5 },
+  { top: '72%', left: '15%', rot: 4, w: 110, fall: 280, index: 6 },
+  { top: '88%', left: '80%', rot: -7, w: 100, fall: 320, index: 7 },
 ]
 
-const showcase = portfolio.slice(0, FLOATS.length)
+const showcase = portfolio.slice(2, 2 + FLOATS.length)
 
 export default function Hero() {
   const rootRef = useRef(null)
@@ -67,10 +73,13 @@ export default function Hero() {
           delay: i * 0.08,
           ease: 'power3.out',
         })
+        // scale isn't driven here — it's already owned by the gsap.set/from
+        // above. Scrubbing it a second time via scroll fought that entrance
+        // tween for the same property, reading as a sudden size jump the
+        // moment you started scrolling.
         gsap.to(el, {
           yPercent: fall,
           rotate: 0,
-          scale: baseScale,
           ease: 'none',
           scrollTrigger: {
             trigger: stageRef.current,
@@ -82,6 +91,17 @@ export default function Hero() {
         gsap.to(inner, {
           y: -10,
           duration: 2.4 + Math.random(),
+          yoyo: true,
+          repeat: -1,
+          ease: 'sine.inOut',
+        })
+
+        // same idle drift on every device — on desktop it just idles between
+        // pointermove events, which drive quickX/quickRotate on top of it
+        gsap.to(inner, {
+          x: 10,
+          rotation: 6,
+          duration: 3.2 + Math.random(),
           yoyo: true,
           repeat: -1,
           ease: 'sine.inOut',
@@ -104,9 +124,18 @@ export default function Hero() {
     }
     stageRef.current.addEventListener('pointermove', onPointerMove)
 
+    const badgeTrigger = ScrollTrigger.create({
+      trigger: '#top',
+      start: 'top top',
+      end: '+=150',
+      onLeave: () => gsap.to('.hero__featured-badge', { opacity: 0, duration: 0.3 }),
+      onEnterBack: () => gsap.to('.hero__featured-badge', { opacity: 1, duration: 0.3 }),
+    })
+
     return () => {
       entrances.forEach((a) => a.cancel())
       stageRef.current?.removeEventListener('pointermove', onPointerMove)
+      badgeTrigger.kill()
       ctx.revert()
     }
   }, [])
@@ -183,6 +212,10 @@ export default function Hero() {
                 className="hero__badge"
                 icon="↓"
               />
+
+              <span className="hero__featured-badge" aria-hidden="true">
+                ↓
+              </span>
             </div>
 
             <FeaturedArt />
