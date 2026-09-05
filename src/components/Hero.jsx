@@ -185,14 +185,20 @@ export default function Hero() {
             ))}
           </div>
 
+          {/* no wrapping div around the text pieces and no display:contents
+              trick to reorder them for mobile — every piece is a direct
+              hero__inner child; mobile just relies on plain source order
+              (title, art, sub, cta), desktop places them into a 2-col grid
+              by class name. display:contents + flex order was the prime
+              suspect for the mobile-only jank (fine in "desktop site" mode,
+              i.e. same hardware, different layout path). */}
           <div className="container hero__inner">
-            <div className="hero__copy">
-              <div className="hero__frame">
+            {/* frame is scoped to this wrapper alone (not a grid-area trick)
+                so it can never bleed into the featured art's column */}
+            <div className="hero__title-frame">
+              <div className="hero__frame hero__frame--top">
                 <span className="hero__frame-handle hero__frame-handle--tl" />
                 <span className="hero__frame-handle hero__frame-handle--tr" />
-                <span className="hero__frame-handle hero__frame-handle--bl" />
-                <span className="hero__frame-handle hero__frame-handle--br" />
-                <span className="hero__frame-resize">↗</span>
               </div>
 
               <h1 className="hero__title">
@@ -205,6 +211,16 @@ export default function Hero() {
                   <FlipWords words={VERBS} />
                 </span>
               </h1>
+            </div>
+
+            <FeaturedArt />
+
+            <div className="hero__rest-frame">
+              <div className="hero__frame hero__frame--bottom">
+                <span className="hero__frame-handle hero__frame-handle--bl" />
+                <span className="hero__frame-handle hero__frame-handle--br" />
+              </div>
+
               <p className="hero__sub">
                 BRTcreative cria identidade visual, social media e peças de campanha para marcas e
                 igrejas que querem parar o feed. Direção de arte pensada pra converter.
@@ -223,13 +239,11 @@ export default function Hero() {
                 className="hero__badge"
                 icon="↓"
               />
-
-              <span className="hero__featured-badge" aria-hidden="true">
-                ↓
-              </span>
             </div>
 
-            <FeaturedArt />
+            <span className="hero__featured-badge" aria-hidden="true">
+              ↓
+            </span>
           </div>
         </div>
       </section>

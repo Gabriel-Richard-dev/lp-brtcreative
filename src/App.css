@@ -1,11 +1,35 @@
 
 /* hero canvas selection frame + AI-prompt toolbar, Figma/Canva-style */
+.hero__title-frame {
+  position: relative;
+}
+
+.hero__rest-frame {
+  position: relative;
+}
+
 .hero__frame {
   position: absolute;
-  inset: -24px -20px;
+  left: -12px;
+  right: -12px;
   z-index: 2;
   border: 1.5px dashed rgba(255, 255, 255, 0.32);
   pointer-events: none;
+}
+
+/* two halves of one frame, meeting with no border between them — the top
+   half hugs the title, the bottom half hugs the rest of the copy, so the
+   art column in between never gets touched by either */
+.hero__frame--top {
+  top: -16px;
+  bottom: 0;
+  border-bottom: none;
+}
+
+.hero__frame--bottom {
+  top: 0;
+  bottom: -16px;
+  border-top: none;
 }
 
 .hero__frame-handle {
@@ -31,21 +55,6 @@
 .hero__frame-handle--br {
   bottom: -6px;
   right: -6px;
-}
-
-.hero__frame-resize {
-  position: absolute;
-  bottom: -34px;
-  right: -14px;
-  font-size: 18px;
-  color: rgba(255, 255, 255, 0.55);
-  transform: rotate(45deg);
-}
-
-@media (max-width: 640px) {
-  .hero__frame {
-    inset: -18px -20px;
-  }
 }
 
 /* autonomous "someone's editing this" cursor — not the visitor's mouse */
@@ -341,10 +350,6 @@
   margin: 0 auto;
 }
 
-.hero__copy {
-  position: relative;
-}
-
 .hero__title {
   font-family: var(--font-display);
   font-size: clamp(40px, 6.4vw, 84px);
@@ -385,25 +390,15 @@
     padding-top: 72px;
   }
 
-  /* interleave title -> featured art -> rest of the copy, without touching
-     the desktop DOM/grid: dissolve .hero__copy so its children become direct
-     flex items of .hero__inner, then reorder everything with `order` */
-  .hero__inner {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .hero__copy {
-    display: contents;
-  }
-
+  /* title -> featured art -> rest, but via plain source order now — no
+     display:contents/flex-order trick. .hero__inner is just a normal block
+     here, so the JSX order (title, FeaturedArt, sub, cta, badge) IS the
+     visual order, full stop. */
   .hero__frame {
     display: none;
   }
 
   .hero__title {
-    order: 1;
     font-size: clamp(30px, 9vw, 44px);
     margin-bottom: 10px;
   }
@@ -420,7 +415,6 @@
   }
 
   .hero__featured-wrap {
-    order: 2;
     margin: 0 auto 24px;
   }
 
@@ -429,19 +423,51 @@
   }
 
   .hero__cta {
-    order: 3;
     margin-top: 32px;
   }
 }
 
 @media (min-width: 1000px) {
+  /* every piece is placed explicitly by class into a 2-column grid — order
+     in the JSX doesn't matter here, so mobile is free to rely on plain
+     source order without this layout caring */
   .hero__inner {
     max-width: 1280px;
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-rows: auto auto;
     align-items: center;
-    gap: 56px;
+    column-gap: 56px;
     text-align: left;
+  }
+
+  /* two direct grid children stacked in column 1 (title, then the rest) —
+     .hero__frame itself never touches the grid, so it can't bleed into the
+     art column. The two frame halves (top/bottom) line up with no border
+     between them, reading as one continuous box around both. */
+  .hero__title-frame {
+    grid-column: 1;
+    grid-row: 1;
+    /* the featured art spans both rows, so the grid can inflate row 1 taller
+       than the title alone needs — align-items:center on .hero__inner would
+       then center this box in that extra space, leaving a real gap between
+       it and .hero__rest-frame below. Stretch it to the row's full height
+       instead, so the two frame pieces always meet with no gap, and center
+       the actual content within that stretched space so it doesn't just
+       cling to the top. */
+    align-self: stretch;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .hero__rest-frame {
+    grid-column: 1;
+    grid-row: 2;
+    align-self: stretch;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
   }
 
   .hero__sub {
@@ -452,8 +478,13 @@
     justify-content: flex-start;
   }
 
-  .circular-text {
+  .hero__badge {
     margin-left: 0;
+  }
+
+  .hero__featured-wrap {
+    grid-column: 2;
+    grid-row: 1 / -1;
   }
 }
 
