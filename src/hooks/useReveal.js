@@ -7,6 +7,7 @@ export function useReveal({
   translateY = 40,
   watch = [],
   rootRef: externalRootRef,
+  disabled = false,
 } = []) {
   const internalRootRef = useRef(null)
   const rootRef = externalRootRef ?? internalRootRef
@@ -14,6 +15,7 @@ export function useReveal({
   useEffect(() => {
     const root = rootRef.current
     if (!root) return
+    if (disabled) return
 
     const els = root.matches(targets) ? [root] : Array.from(root.querySelectorAll(targets))
     if (!els.length) return
@@ -41,7 +43,7 @@ export function useReveal({
 
     els.forEach((el) => observer.observe(el))
     return () => observer.disconnect()
-  }, [targets, staggerMs, translateY, ...watch])
+  }, [targets, staggerMs, translateY, disabled, ...watch])
 
   return rootRef
 }

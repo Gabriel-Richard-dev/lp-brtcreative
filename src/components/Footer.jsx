@@ -1,5 +1,3 @@
-import { useReveal } from '../hooks/useReveal'
-
 const logo = '/logo-brt.svg'
 
 const LINKS = [
@@ -10,12 +8,10 @@ const LINKS = [
 ]
 
 export default function Footer() {
-  const ref = useReveal()
-
   return (
-    <footer className="footer" ref={ref}>
+    <footer className="footer">
       <div className="container">
-        <div className="footer__top" data-reveal>
+        <div className="footer__top">
           <a href="#top" className="footer__brand">
             <img src={logo} alt="" className="footer__logo" />
             <span>BRTcreative</span>
@@ -25,7 +21,7 @@ export default function Footer() {
           </a>
         </div>
 
-        <div className="footer__grid" data-reveal>
+        <div className="footer__grid">
           <nav className="footer__nav">
             {LINKS.map((l) => (
               <a key={l.href} href={l.href}>

@@ -4,6 +4,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { portfolio, categories } from '../data/portfolio'
 import { useReveal } from '../hooks/useReveal'
 import { useTilt3D } from '../hooks/useTilt3D'
+import { isLowPowerDevice } from '../lib/performance'
 import Lightbox from './Lightbox'
 
 gsap.registerPlugin(ScrollTrigger)
@@ -11,9 +12,17 @@ gsap.registerPlugin(ScrollTrigger)
 export default function Portfolio() {
   const [filter, setFilter] = useState('Todos')
   const [active, setActive] = useState(null)
-  const ref = useReveal({ targets: '.portfolio__head' })
+  const mobile = isLowPowerDevice()
+  const ref = useReveal({ targets: '.portfolio__head', disabled: mobile })
   const gridRef = useRef(null)
-  useReveal({ targets: '.portfolio__card', stagger: 40, translateY: 0, watch: [filter], rootRef: gridRef })
+  useReveal({
+    targets: '.portfolio__card',
+    stagger: 40,
+    translateY: 0,
+    watch: [filter],
+    rootRef: gridRef,
+    disabled: mobile,
+  })
   const tilt = useTilt3D()
 
   const items = useMemo(() => {

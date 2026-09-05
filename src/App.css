@@ -747,6 +747,10 @@
   flex-direction: column;
   gap: 14px;
   margin: 8px 0 32px;
+  /* skip layout/paint entirely while off-screen — the browser stops paying
+     the repaint cost for this strip's shadows/clip-paths until it's near view */
+  content-visibility: auto;
+  contain-intrinsic-size: auto 140px;
 }
 
 .marquee {
@@ -1177,6 +1181,10 @@
 .portfolio {
   padding: 120px 0;
   border-top: 1px solid var(--line);
+  /* dozens of shadowed, clip-path'd cards — skip rendering them while
+     off-screen instead of repainting all of it as it scrolls into view */
+  content-visibility: auto;
+  contain-intrinsic-size: auto 1800px;
 }
 
 .portfolio__head {
@@ -1394,6 +1402,8 @@
 .contact {
   padding: 140px 0;
   border-top: 1px solid var(--line);
+  content-visibility: auto;
+  contain-intrinsic-size: auto 500px;
   text-align: center;
 }
 
@@ -1489,6 +1499,8 @@
 .footer {
   padding: 80px 0 32px;
   border-top: 1px solid var(--line);
+  content-visibility: auto;
+  contain-intrinsic-size: auto 400px;
 }
 
 .footer__top {

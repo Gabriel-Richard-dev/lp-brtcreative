@@ -11,7 +11,7 @@ gsap.registerPlugin(ScrollTrigger)
 const WHEEL = portfolio.slice(0, 7)
 
 export default function About() {
-  const ref = useReveal()
+  const ref = useReveal({ disabled: isLowPowerDevice() })
   const ringRef = useRef(null)
 
   useEffect(() => {
