@@ -17,6 +17,11 @@ export default function About() {
     const chips = gsap.utils.toArray('.about__wheel-chip')
     gsap.set(chips, { xPercent: -50, yPercent: -50 })
 
+    // this scrub writes a transform to the ring AND all 7 chips on every
+    // single scroll tick across the whole section — real continuous cost
+    // that's not worth it on a weaker mobile CPU for a decorative spin
+    if (window.matchMedia('(max-width: 999px)').matches) return
+
     const tween = gsap.to(ringRef.current, {
       rotation: 360,
       ease: 'none',

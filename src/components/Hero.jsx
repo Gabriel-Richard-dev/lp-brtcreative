@@ -82,17 +82,23 @@ export default function Hero() {
         // above. Scrubbing it a second time via scroll fought that entrance
         // tween for the same property, reading as a sudden size jump the
         // moment you started scrolling.
-        gsap.to(el, {
-          yPercent: fall,
-          rotate: 0,
-          ease: 'none',
-          scrollTrigger: {
-            trigger: stageRef.current,
-            start: 'top top',
-            end: '+=900',
-            scrub: 0.6,
-          },
-        })
+        //
+        // scrub ties this to the scroll listener firing continuously — fine
+        // on desktop, but on a weaker mobile CPU it's a big chunk of the jank.
+        // Ambient stamps on mobile just sit there instead.
+        if (!isMobile) {
+          gsap.to(el, {
+            yPercent: fall,
+            rotate: 0,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: stageRef.current,
+              start: 'top top',
+              end: '+=900',
+              scrub: 0.6,
+            },
+          })
+        }
         // one combined idle sway instead of two separate infinite tweens per
         // float — same effect, half the ongoing animation work. On desktop
         // it idles between pointermove events, which drive quickX/quickRotate

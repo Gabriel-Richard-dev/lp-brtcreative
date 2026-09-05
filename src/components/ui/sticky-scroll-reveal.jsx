@@ -52,7 +52,7 @@ export const StickyScroll = ({
           <AnimatePresence initial={false}>
             <motion.div
               key={activeCard}
-              style={{ zIndex: activeCard, filter: "drop-shadow(0 8px 8px rgba(0,0,0,0.35))" }}
+              style={{ zIndex: activeCard }}
               initial={{ clipPath: tornClip(-8) }}
               animate={{ clipPath: tornClip(108) }}
               exit={{ opacity: 0 }}
