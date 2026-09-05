@@ -262,6 +262,17 @@
   height: 30px;
 }
 
+@media (max-width: 999px) {
+  /* backdrop-filter on a fixed, always-on-screen element recomputes a blur
+     of everything behind it on every scroll compositor frame — cheap on a
+     desktop GPU, brutal on a real phone GPU at native pixel density. Flat
+     background instead, same breakpoint isLowPowerDevice() already uses. */
+  .floating-logo {
+    backdrop-filter: none;
+    background: rgba(10, 10, 11, 0.88);
+  }
+}
+
 @media (max-width: 640px) {
   .floating-logo {
     top: 14px;
