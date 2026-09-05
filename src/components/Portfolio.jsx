@@ -12,8 +12,9 @@ gsap.registerPlugin(ScrollTrigger)
 export default function Portfolio() {
   const [filter, setFilter] = useState('Todos')
   const [active, setActive] = useState(null)
-  const ref = useReveal({ targets: '[data-reveal]', stagger: 60 })
+  const ref = useReveal({ targets: '.portfolio__head' })
   const gridRef = useRef(null)
+  useReveal({ targets: '.portfolio__card', stagger: 60, watch: [filter], rootRef: gridRef })
   const tilt = useTilt3D()
 
   const items = useMemo(

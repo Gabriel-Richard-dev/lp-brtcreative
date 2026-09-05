@@ -1,8 +1,15 @@
 import { useEffect, useRef } from 'react'
 import { animate, stagger } from 'animejs'
 
-export function useReveal({ targets = '[data-reveal]', stagger: staggerMs = 80, translateY = 40 } = []) {
-  const rootRef = useRef(null)
+export function useReveal({
+  targets = '[data-reveal]',
+  stagger: staggerMs = 80,
+  translateY = 40,
+  watch = [],
+  rootRef: externalRootRef,
+} = []) {
+  const internalRootRef = useRef(null)
+  const rootRef = externalRootRef ?? internalRootRef
 
   useEffect(() => {
     const root = rootRef.current
@@ -34,7 +41,7 @@ export function useReveal({ targets = '[data-reveal]', stagger: staggerMs = 80, 
 
     els.forEach((el) => observer.observe(el))
     return () => observer.disconnect()
-  }, [targets, staggerMs, translateY])
+  }, [targets, staggerMs, translateY, ...watch])
 
   return rootRef
 }
