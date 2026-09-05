@@ -888,6 +888,34 @@
   text-align: center;
 }
 
+.process__caption--in {
+  animation: process-caption-in 0.3s ease-out both;
+}
+
+@keyframes process-caption-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.process__step {
+  animation: process-fade 0.5s ease-in-out both;
+}
+
+@keyframes process-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
 .process__caption h3 {
   font-family: var(--font-display);
   font-size: 20px;
@@ -1240,9 +1268,8 @@
 
 .portfolio__frame img {
   width: 100%;
-  height: 128%;
+  height: 100%;
   object-fit: cover;
-  will-change: transform;
 }
 
 .portfolio__card-overlay {

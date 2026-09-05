@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { portfolio, categories } from '../data/portfolio'
@@ -22,28 +22,6 @@ export default function Portfolio() {
     const closed = Math.floor(list.length / 3) * 3
     return list.slice(0, closed || list.length)
   }, [filter])
-
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      gsap.utils.toArray('.portfolio__frame img').forEach((img) => {
-        gsap.fromTo(
-          img,
-          { yPercent: -12 },
-          {
-            yPercent: 12,
-            ease: 'none',
-            scrollTrigger: {
-              trigger: img,
-              start: 'top bottom',
-              end: 'bottom top',
-              scrub: 0.6,
-            },
-          },
-        )
-      })
-    }, gridRef)
-    return () => ctx.revert()
-  }, [items])
 
   function handleHover(e, entering) {
     gsap.to(e.currentTarget.querySelector('.portfolio__frame'), {
