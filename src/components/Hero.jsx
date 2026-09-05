@@ -64,17 +64,17 @@ export default function Hero() {
         const inner = el.querySelector('.hero__float-inner')
 
         // GSAP is the single owner of this element's transform — mixing in
-        // animejs or a CSS media-query scale here gets clobbered on first scroll tick.
-        gsap.set(el, { scale: baseScale })
-        gsap.from(el, {
-          opacity: 0,
-          scale: baseScale * 0.7,
-          duration: 0.8,
-          delay: i * 0.08,
-          ease: 'power3.out',
-        })
-        // scale isn't driven here — it's already owned by the gsap.set/from
-        // above. Scrubbing it a second time via scroll fought that entrance
+        // other libs or a CSS media-query scale here gets clobbered on first
+        // scroll tick. fromTo (not from) so the "arrived" state is explicit —
+        // .hero__float's own CSS opacity:0 made a plain .from() ambiguous
+        // about what it was even animating toward.
+        gsap.fromTo(
+          el,
+          { opacity: 0, scale: baseScale * 0.7 },
+          { opacity: 1, scale: baseScale, duration: 0.8, delay: i * 0.08, ease: 'power3.out' },
+        )
+        // scale isn't driven here — it's already owned by the fromTo above.
+        // Scrubbing it a second time via scroll fought that entrance
         // tween for the same property, reading as a sudden size jump the
         // moment you started scrolling.
         //
