@@ -1,5 +1,3 @@
-import { FloatingDock } from './ui/floating-dock'
-
 // Official brand marks (simple-icons), each kept in its own brand color.
 const TOOLS = [
   {
@@ -22,27 +20,22 @@ const TOOLS = [
   },
 ]
 
-const items = TOOLS.map((t) => ({
-  title: t.title,
-  href: '#trabalhos',
-  icon: (
-    <span className="tool-dock__badge" style={{ background: t.bg }}>
-      <svg viewBox="0 0 24 24" fill={t.fg} role="img" aria-label={t.title}>
-        <path d={t.path} />
-      </svg>
-    </span>
-  ),
-}))
-
 export default function ToolDock(props) {
   return (
     <div className="tool-dock" {...props}>
       <p className="tool-dock__label">Ferramentas do dia a dia</p>
-      <FloatingDock
-        items={items}
-        desktopClassName="tool-dock__desktop"
-        mobileClassName="tool-dock__mobile"
-      />
+      <div className="tool-dock__chips">
+        {TOOLS.map((t) => (
+          <span className="tool-dock__chip" key={t.title}>
+            <span className="tool-dock__badge" style={{ background: t.bg }}>
+              <svg viewBox="0 0 24 24" fill={t.fg} role="img" aria-label={t.title}>
+                <path d={t.path} />
+              </svg>
+            </span>
+            {t.title}
+          </span>
+        ))}
+      </div>
     </div>
   )
 }

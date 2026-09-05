@@ -17,42 +17,15 @@ const steps = Object.entries(stepFiles)
 const lastIndex = steps.length - 1
 
 const CONTENT = [
-  {
-    title: 'Textura',
-    description: 'Papel e grão como base — toda arte parte de uma textura física escaneada.',
-  },
-  {
-    title: 'Referência',
-    description: 'Foto tratada em duotone: é o esqueleto que guia luz, sombra e composição.',
-  },
-  {
-    title: 'Título',
-    description: 'A palavra-chave da peça entra primeiro, gigante, definindo o eixo visual.',
-  },
-  {
-    title: 'Headline',
-    description: 'Uma segunda camada de texto contextualiza o título principal.',
-  },
-  {
-    title: 'Assinatura gráfica',
-    description: 'Traço solto por cima do título — a marca autoral do BRT.',
-  },
-  {
-    title: 'Ícones & referências',
-    description: 'Elementos que contam a história do processo: ferramentas, redes, contexto.',
-  },
-  {
-    title: 'Recorte',
-    description: 'A silhueta do personagem é isolada, recortada pra entrar na composição.',
-  },
-  {
-    title: 'Ilustração',
-    description: 'Linha e cor fecham o personagem no estilo pop-art da marca.',
-  },
-  {
-    title: 'Arte finalizada',
-    description: 'Retoques de luz, assinatura e logo — pronta pra postar. Essa é a de destaque.',
-  },
+  { title: 'Textura' },
+  { title: 'Referência' },
+  { title: 'Título' },
+  { title: 'Headline' },
+  { title: 'Assinatura gráfica' },
+  { title: 'Ícones & referências' },
+  { title: 'Recorte' },
+  { title: 'Ilustração' },
+  { title: 'Arte finalizada' },
 ].map((step, i) => {
   const isFinal = i === lastIndex
   return {

@@ -83,7 +83,6 @@ export const StickyScroll = ({
             className="process__caption"
           >
             <h3>{active.title}</h3>
-            <p>{active.description}</p>
           </motion.div>
         </AnimatePresence>
       </div>
