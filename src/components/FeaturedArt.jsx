@@ -14,12 +14,9 @@ const MOBILE_PATH = [
   { x: 0, y: 0 },
 ]
 
-const TILT_MAX = 10
-
 export default function FeaturedArt() {
-  const tilt = useTilt3D(TILT_MAX)
+  const tilt = useTilt3D(10)
   const wrapRef = useRef(null)
-  const cardRef = useRef(null)
   const [isMobile] = useState(() => window.matchMedia('(max-width: 999px)').matches)
 
   useEffect(() => {
@@ -37,44 +34,10 @@ export default function FeaturedArt() {
     return () => tween.kill()
   }, [])
 
-  useEffect(() => {
-    // no mouse on a phone — tilt the card with the device's orientation instead
-    if (!isMobile || typeof DeviceOrientationEvent === 'undefined') return
-
-    function onOrientation(e) {
-      const card = cardRef.current
-      if (!card || e.beta == null || e.gamma == null) return
-      const px = Math.max(-1, Math.min(1, e.gamma / 45))
-      const py = Math.max(-1, Math.min(1, (e.beta - 45) / 45))
-      card.style.setProperty('--tilt-x', `${(-py * TILT_MAX).toFixed(2)}deg`)
-      card.style.setProperty('--tilt-y', `${(px * TILT_MAX).toFixed(2)}deg`)
-    }
-
-    function start() {
-      window.addEventListener('deviceorientation', onOrientation)
-    }
-
-    // iOS 13+ only grants motion access from a user gesture
-    if (typeof DeviceOrientationEvent.requestPermission === 'function') {
-      const onFirstTouch = () => {
-        document.removeEventListener('touchend', onFirstTouch)
-        DeviceOrientationEvent.requestPermission()
-          .then((state) => state === 'granted' && start())
-          .catch(() => {})
-      }
-      document.addEventListener('touchend', onFirstTouch, { once: true })
-      return () => document.removeEventListener('touchend', onFirstTouch)
-    }
-
-    start()
-    return () => window.removeEventListener('deviceorientation', onOrientation)
-  }, [isMobile])
-
   return (
     <div className="hero__featured-wrap" ref={wrapRef}>
       <div
         className="hero__featured torn"
-        ref={cardRef}
         onMouseMove={tilt.onMouseMove}
         onMouseLeave={tilt.onMouseLeave}
       >
